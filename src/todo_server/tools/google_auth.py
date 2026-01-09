@@ -12,15 +12,20 @@ def get_credentials():
     client_secret = os.getenv("GOOGLE_CLIENT_SECRET")
     
     if not client_id or not client_secret:
-        # 로그는 반드시 stderr로 출력
-        print("⚠️ 환경 변수(CLIENT_ID/SECRET)가 설정되지 않았습니다.", file=sys.stderr)
+        print("❌ 환경 변수 미설정: GOOGLE_CLIENT_ID/SECRET", file=sys.stderr)
         return None
 
     creds = None
     if token_path.exists():
         creds = Credentials.from_authorized_user_file(str(token_path), SCOPES)
     
+    # 인증이 안 되어 있을 때만 브라우저 시도
     if not creds or not creds.valid:
+        # Smithery 스캔 환경(브라우저 없음)에서는 여기서 에러를 내고 넘어가야 스캔이 성공함
+        if os.getenv("SMITHERY_SCANNING") == "true":
+            print("🔍 Smithery 스캔 모드: 인증 시도를 건너뜁니다.", file=sys.stderr)
+            return None
+            
         try:
             client_config = {
                 "installed": {
@@ -30,11 +35,10 @@ def get_credentials():
                 }
             }
             flow = InstalledAppFlow.from_client_config(client_config, SCOPES)
-            # 로컬 환경이 아닐 경우(배포 스캔 중) 에러가 날 수 있으므로 대비
-            creds = flow.run_local_server(port=0, open_browser=True)
+            creds = flow.run_local_server(port=0)
             with open(token_path, 'w') as token:
                 token.write(creds.to_json())
         except Exception as e:
-            print(f"❌ 인증 프로세스 오류: {e}", file=sys.stderr)
+            print(f"❌ 인증 실패: {e}", file=sys.stderr)
             return None
     return creds

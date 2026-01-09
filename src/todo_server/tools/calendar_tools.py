@@ -14,7 +14,8 @@ def register_calendar_tools(mcp):
     def get_service():
         creds = get_credentials()
         if not creds:
-            raise Exception("Google 인증이 완료되지 않았습니다. 브라우저를 통해 로그인을 먼저 해주세요.")
+            # 사용자가 도구를 썼을 때 인증이 없으면 그때 알림
+            raise Exception("Google 인증이 완료되지 않았습니다. 서버 로그를 확인하거나 다시 시도해 주세요.")
         return build('calendar', 'v3', credentials=creds)
     @mcp.tool()
     def add_schedule(title: str, content: str, start: str, end: str, category: str = "개인"):

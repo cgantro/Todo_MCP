@@ -4,31 +4,25 @@ from fastmcp import FastMCP
 from smithery.decorators import smithery
 from dotenv import load_dotenv
 
-from .tools.google_auth import get_credentials
+# 도구 모듈 임포트
 from .tools.calendar_tools import register_calendar_tools
 from .tools.helper import register_helper_tools
 
-# .env 로드
 load_dotenv()
 
 @smithery.server()
 def app():
-    # 로그는 stdout이 아닌 stderr로 출력해야 MCP 연결이 깨지지 않습니다.
-    print("🚀 Google 캘린더 시스템 초기화 중...", file=sys.stderr)
+    # 1. 스캔 시 stdout 오염 방지 (모든 로그는 stderr로)
+    print("🚀 Smart Manager Server 준비 중...", file=sys.stderr)
     
-    # Smithery 스캔 시에는 인증을 건너뛰도록 처리 (인터랙티브 브라우저 차단 방지)
-    # 실제 Claude Desktop에서 실행될 때는 인증이 작동합니다.
-    if os.getenv("SMITHERY_SCANNING") != "true":
-        try:
-            get_credentials()
-        except Exception as e:
-            print(f"❌ 초기 인증 시도 중 오류 (사용 시 재시도): {e}", file=sys.stderr)
+    mcp = FastMCP("Smart Schedule Manager")
 
-    mcp = FastMCP("Google Calendar Smart Manager")
-    
-    # 도구 등록
+    # 2. 도구 등록 (인증과 상관없이 도구 정의는 보여줘야 스캔이 성공함)
     register_calendar_tools(mcp)
     register_helper_tools(mcp)
+    
+    # 3. 중요: 스캔 중에는 get_credentials()를 절대 호출하지 않음
+    # 실제 Claude Desktop 등에서 사용자가 도구를 클릭할 때만 인증이 작동하게 됨
     
     return mcp
 
