@@ -1,34 +1,15 @@
 # smithery.yaml
-runtime: "container"
+# Smithery.ai 에이전트 배포를 위한 설정 파일
+runtime: "python"
+# 1. 에이전트 기본 정보
+# name: smithery.ai 대시보드에 표시될 에이전트의 이름입니다.
+# description: 에이전트에 대한 간략한 설명입니다.
+name: "Smart Schedule Manager"
+description: "Google Calendar를 사용하여 당신의 일정과 메모를 체계적으로 관리합니다."
 
-# Smithery 클라우드 배포를 위한 HTTP 설정
-startCommand:
-  type: "http"
-  configSchema:
-    type: "object"
-    required:
-      - GOOGLE_CLIENT_ID
-      - GOOGLE_CLIENT_SECRET
-      - SENDER_EMAIL
-      - SENDER_PASSWORD
-    properties:
-      GOOGLE_CLIENT_ID:
-        type: "string"
-        description: "Google OAuth Client ID"
-      GOOGLE_CLIENT_SECRET:
-        type: "string"
-        description: "Google OAuth Client Secret"
-      SENDER_EMAIL:
-        type: "string"
-        description: "발신용 Gmail 주소"
-      SENDER_PASSWORD:
-        type: "string"
-        description: "Gmail 앱 비밀번호"
-      SMITHERY_SCANNING:
-        type: "string"
-        default: "true"
-
-# 빌드 설정
-build:
-  dockerfile: "Dockerfile"
-  dockerBuildPath: "."
+# 2. MCP 서버 설정
+# mcp_server: 에이전트의 핵심 로직이 담긴 MCP 서버의 실행 방법을 정의합니다.
+mcp_server:
+  # main: 서버를 시작하는 진입점(entrypoint) 파일 경로입니다.
+  # 프로젝트의 루트 디렉토리 기준 상대 경로를 사용합니다.
+  main: todo_server/main.py
