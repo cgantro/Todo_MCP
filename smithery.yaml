@@ -1,13 +1,13 @@
+# Smithery 설정 파일 - 스키마 검증 통과 버전
 runtime: python
 
+# 1. 서버 실행 진입점 (env와 같은 레벨이어야 합니다)
+entrypoint: todo_server/main.py
+
+# 2. 환경변수 설정
 env:
   SMITHERY_KEY: ${SMITHERY_KEY}
   GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
   GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
   SENDER_EMAIL: ${SENDER_EMAIL}
   SENDER_PASSWORD: ${SENDER_PASSWORD}
-
-  mcp_server:
-  # main: 서버를 시작하는 진입점(entrypoint) 파일 경로입니다.
-  # 프로젝트의 루트 디렉토리 기준 상대 경로를 사용합니다.
-    main: todo_server/main.py
