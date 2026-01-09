@@ -2,9 +2,6 @@
 requires = ["uv_build>=0.8.15"]
 build-backend = "uv_build"
 
-[tool.uv]
-package = true
-
 [project]
 name = "todo-server"
 version = "0.1.0"
