@@ -6,3 +6,8 @@ env:
   GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
   SENDER_EMAIL: ${SENDER_EMAIL}
   SENDER_PASSWORD: ${SENDER_PASSWORD}
+
+  mcp_server:
+  # main: 서버를 시작하는 진입점(entrypoint) 파일 경로입니다.
+  # 프로젝트의 루트 디렉토리 기준 상대 경로를 사용합니다.
+    main: todo_server/main.py
