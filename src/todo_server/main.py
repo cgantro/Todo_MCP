@@ -1,4 +1,6 @@
 import os
+# 1. UTF-8 인코딩 강제 설정 (Windows/Docker 호환성 및 한글 깨짐 방지)
+os.environ['PYTHONIOENCODING'] = 'utf-8'
 import sys
 from typing import Optional
 from fastmcp import FastMCP
@@ -11,11 +13,12 @@ load_dotenv()
 load_dotenv("src/.env")
 
 class SmartManagerConfig(BaseModel):
-    GOOGLE_CLIENT_ID: Optional[str] = Field(None)
-    GOOGLE_CLIENT_SECRET: Optional[str] = Field(None)
-    SENDER_EMAIL: Optional[str] = Field(None)
-    SENDER_PASSWORD: Optional[str] = Field(None)
-    SMITHERY_KEY: Optional[str] = Field(None)
+    """스마트 스케줄 매니저의 인증 및 서비스 설정을 정의합니다."""
+    GOOGLE_CLIENT_ID: Optional[str] = Field(None, description="Google Cloud Console의 Client ID")
+    GOOGLE_CLIENT_SECRET: Optional[str] = Field(None, description="Google Cloud Console의 Client Secret")
+    SENDER_EMAIL: Optional[str] = Field(None, description="알림을 보낼 Gmail 주소")
+    SENDER_PASSWORD: Optional[str] = Field(None, description="Gmail 앱 비밀번호")
+    SMITHERY_KEY: Optional[str] = Field(None, description="Smithery 서비스 연동 키")
 
 @smithery.server(config_schema=SmartManagerConfig)
 def app(config: SmartManagerConfig = None):
