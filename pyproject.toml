@@ -1,0 +1,21 @@
+[build-system]
+requires = ["uv_build>=0.8.15"]
+build-backend = "uv_build"
+
+[project]
+name = "mcp-server"
+version = "0.1.0"
+description = "할 일 관리"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "fastmcp>=2.8.1",
+    "python-dateutil>=2.9.0"
+]
+
+[project.scripts]
+dev = "smithery.cli.dev:main"
+playground = "smithery.cli.playground:main"
+# Points to your server function
+[tool.smithery] 
+server = "server:app"
