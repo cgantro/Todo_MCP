@@ -1,18 +1,32 @@
 # smithery.yaml
-version: "1.0"
-variables:
-  - name: GOOGLE_CLIENT_ID
-    required: true
-  - name: GOOGLE_CLIENT_SECRET
-    required: true
-  - name: SENDER_EMAIL
-    required: true
-  - name: SENDER_PASSWORD
-    required: true
-  - name: SMITHERY_SCANNING
-    default: "true" # 스캔 시 인증 블로킹 방지용
+runtime: "container"
 
-# 실행 설정
-start:
-  command: python
-  args: ["-m", "todo_server.main"]
+startCommand:
+  type: "http"
+  configSchema:
+    type: "object"
+    required:
+      - GOOGLE_CLIENT_ID
+      - GOOGLE_CLIENT_SECRET
+      - SENDER_EMAIL
+      - SENDER_PASSWORD
+    properties:
+      GOOGLE_CLIENT_ID:
+        type: "string"
+        description: "Google OAuth Client ID"
+      GOOGLE_CLIENT_SECRET:
+        type: "string"
+        description: "Google OAuth Client Secret"
+      SENDER_EMAIL:
+        type: "string"
+        description: "발신용 Gmail 주소"
+      SENDER_PASSWORD:
+        type: "string"
+        description: "Gmail 앱 비밀번호"
+      SMITHERY_SCANNING:
+        type: "string"
+        default: "true"
+
+build:
+  dockerfile: "Dockerfile"
+  dockerBuildPath: "."
