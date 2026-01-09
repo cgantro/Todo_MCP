@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 from .tools.google_auth import get_credentials
 from .tools.calendar_tools import register_calendar_tools
-
+from .tools.helper import register_helper_tools
 # 로컬 .env 및 Smithery 환경 변수 통합 지원
 load_dotenv()
 
@@ -22,6 +22,7 @@ def app():
     
     # 캘린더 기반 통합 도구 등록 (일정 + 메모)
     register_calendar_tools(mcp)
+    register_helper_tools(mcp) # 사용법 안내 도우미 등록
     
     return mcp
 

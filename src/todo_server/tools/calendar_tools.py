@@ -32,7 +32,38 @@ def register_calendar_tools(mcp):
         }
         res = service.events().insert(calendarId='primary', body=event).execute()
         return f"📅 {category} 일정 등록 완료: {res.get('htmlLink')}"
+    @mcp.tool()
+    def delete_schedule(title: str = None, event_id: str = None):
+        """
+        일정을 삭제합니다. 제목(title)으로 검색하여 삭제하거나 고유 ID(event_id)로 삭제할 수 있습니다.
+        """
+        service = get_service()
+        target_id = event_id
 
+        # ID가 없고 제목만 있는 경우 검색을 통해 ID를 찾음
+        if not target_id and title:
+            now = datetime.datetime.utcnow().isoformat() + 'Z'
+            events_res = service.events().list(
+                calendarId='primary', q=title, timeMin=now
+            ).execute()
+            events = events_res.get('items', [])
+            
+            if not events:
+                return f"❌ '{title}' 제목과 일치하는 일정을 찾을 수 없습니다."
+            
+            # 가장 유사한 첫 번째 일정의 ID 선택
+            target_id = events[0]['id']
+            summary = events[0].get('summary', '제목 없음')
+
+        if not target_id:
+            return "❌ 삭제할 일정의 제목이나 고유 ID를 알려주세요."
+
+        try:
+            service.events().delete(calendarId='primary', eventId=target_id).execute()
+            return f"🗑️ 일정이 성공적으로 삭제되었습니다. (ID: {target_id})"
+        except Exception as e:
+            return f"❌ 삭제 실패: {str(e)}"
+        
     @mcp.tool()
     def list_schedules(days: int = 7, category_filter: str = None):
         """
