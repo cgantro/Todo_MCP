@@ -12,8 +12,10 @@ CATEGORY_MAP = {
 
 def register_calendar_tools(mcp):
     def get_service():
-        return build('calendar', 'v3', credentials=get_credentials())
-
+        creds = get_credentials()
+        if not creds:
+            raise Exception("Google 인증이 완료되지 않았습니다. 브라우저를 통해 로그인을 먼저 해주세요.")
+        return build('calendar', 'v3', credentials=creds)
     @mcp.tool()
     def add_schedule(title: str, content: str, start: str, end: str, category: str = "개인"):
         """
