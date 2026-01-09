@@ -2,20 +2,26 @@
 requires = ["uv_build>=0.8.15"]
 build-backend = "uv_build"
 
+[tool.uv]
+package = true
+
 [project]
-name = "mcp-server"
+name = "todo-server"
 version = "0.1.0"
-description = "할 일 관리"
+description = "FastMCP 2.8.1 및 Annotated 안정화 서버"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "fastmcp>=2.8.1",
-    "python-dateutil>=2.9.0"
+    "fastmcp==2.8.1",
+    "smithery>=0.4.2",
+    "python-dateutil>=2.9.0",
+    "pydantic==2.8.2",  # 최신 버전 충돌 방지를 위해 2.8.2 고정
+    "python-dotenv>=1.1.1"
 ]
 
 [project.scripts]
 dev = "smithery.cli.dev:main"
 playground = "smithery.cli.playground:main"
-# Points to your server function
-[tool.smithery] 
-server = "server:app"
+
+[tool.smithery]
+server = "todo_server.server:app"
