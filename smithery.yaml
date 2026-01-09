@@ -1,6 +1,7 @@
 # smithery.yaml
 runtime: "container"
 
+# Smithery 클라우드 배포를 위한 HTTP 설정
 startCommand:
   type: "http"
   configSchema:
@@ -27,6 +28,7 @@ startCommand:
         type: "string"
         default: "true"
 
+# 빌드 설정
 build:
   dockerfile: "Dockerfile"
   dockerBuildPath: "."
