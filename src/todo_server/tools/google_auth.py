@@ -14,8 +14,8 @@ def get_credentials():
         return Credentials.from_authorized_user_file(str(token_path), SCOPES)
 
     # 3. 인증 정보가 아예 없는 경우
-    client_id = os.getenv("GOOGLE_CLIENT_ID")
-    client_secret = os.getenv("GOOGLE_CLIENT_SECRET")
+    client_id = os.environ.get("GOOGLE_CLIENT_ID")
+    client_secret = os.environ.get("GOOGLE_CLIENT_SECRET")
     
     if not client_id or not client_secret:
         return None
