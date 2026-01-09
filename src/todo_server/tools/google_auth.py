@@ -20,11 +20,6 @@ def get_credentials():
     if not client_id or not client_secret:
         return None
 
-    # 배포 환경(Smithery)에서는 브라우저를 띄울 수 없으므로 여기서 중단
-    if os.getenv("SMITHERY") == "true":
-        print("❌ 배포 환경에서는 브라우저 인증을 실행할 수 없습니다.", file=sys.stderr)
-        return None
-
     # 로컬인 경우에만 브라우저 실행
     flow = InstalledAppFlow.from_client_config({
         "installed": {"client_id": client_id, "client_secret": client_secret}
