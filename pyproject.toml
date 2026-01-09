@@ -16,7 +16,10 @@ dependencies = [
     "smithery>=0.4.2",
     "python-dateutil>=2.9.0",
     "pydantic==2.8.2",  # 최신 버전 충돌 방지를 위해 2.8.2 고정
-    "python-dotenv>=1.1.1"
+    "python-dotenv>=1.1.1",
+    "google-api-python-client>=2.150.0",
+    "google-auth-oauthlib>=1.2.1",
+    "google-auth-httplib2>=0.2.0",
 ]
 
 [project.scripts]
@@ -24,4 +27,4 @@ dev = "smithery.cli.dev:main"
 playground = "smithery.cli.playground:main"
 
 [tool.smithery]
-server = "todo_server.server:app"
+server = "todo_server.main:app"
