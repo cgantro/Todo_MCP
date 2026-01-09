@@ -7,13 +7,6 @@ from ..database import get_path
 SCOPES = ['https://www.googleapis.com/auth/calendar']
 
 def get_credentials():
-    # 1. 환경 변수(GOOGLE_TOKEN_DATA)에 직접 JSON 내용이 주입된 경우 (배포용)
-    token_json_str = os.getenv("GOOGLE_TOKEN_DATA")
-    if token_json_str:
-        try:
-            return Credentials.from_authorized_user_info(json.loads(token_json_str), SCOPES)
-        except Exception as e:
-            print(f"⚠️ GOOGLE_TOKEN_DATA 파싱 실패: {e}", file=sys.stderr)
 
     # 2. 기존 파일 방식 (로컬용)
     token_path = get_path("google_token.json")

@@ -17,7 +17,7 @@ class SmartManagerConfig(BaseModel):
     GOOGLE_CLIENT_SECRET: Optional[str] = Field(None)
     SENDER_EMAIL: Optional[str] = Field(None)
     SENDER_PASSWORD: Optional[str] = Field(None)
-    GOOGLE_TOKEN_DATA: Optional[str] = Field(None, description="google_token.json의 JSON 내용 전체")
+    SMITHERY_KEY: Optional[str] = Field(None)
 
 @smithery.server(config_schema=SmartManagerConfig)
 def app(config: SmartManagerConfig = None):
@@ -29,7 +29,7 @@ def app(config: SmartManagerConfig = None):
         if config.GOOGLE_CLIENT_SECRET: os.environ["GOOGLE_CLIENT_SECRET"] = config.GOOGLE_CLIENT_SECRET
         if config.SENDER_EMAIL: os.environ["SENDER_EMAIL"] = config.SENDER_EMAIL
         if config.SENDER_PASSWORD: os.environ["SENDER_PASSWORD"] = config.SENDER_PASSWORD
-        if config.GOOGLE_TOKEN_DATA: os.environ["GOOGLE_TOKEN_DATA"] = config.GOOGLE_TOKEN_DATA
+        if config.SMITHERY_KEY: os.environ["SMITHERY_KEY"] = config.SMITHERY_KEY
 
     from .tools.calendar_tools import register_calendar_tools
     from .tools.helper import register_helper_tools
