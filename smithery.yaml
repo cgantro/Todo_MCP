@@ -1,3 +1,18 @@
-runtime: "python"
-env:
-  PYTHONIOENCODING: "utf-8"
+# smithery.yaml
+version: "1.0"
+variables:
+  - name: GOOGLE_CLIENT_ID
+    required: true
+  - name: GOOGLE_CLIENT_SECRET
+    required: true
+  - name: SENDER_EMAIL
+    required: true
+  - name: SENDER_PASSWORD
+    required: true
+  - name: SMITHERY_SCANNING
+    default: "true" # 스캔 시 인증 블로킹 방지용
+
+# 실행 설정
+start:
+  command: python
+  args: ["-m", "todo_server.main"]
