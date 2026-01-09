@@ -1,6 +1,13 @@
 # smithery.yaml
 # Smithery.ai 에이전트 배포를 위한 설정 파일
 runtime: "python"
+
+env:
+  SMITHERY_API_KEY : ${SMITHERY_API_KEY}
+  GOOGLE_CLIENT_ID : ${GOOGLE_CLIENT_ID}
+  GOOGLE_CLIENT_SECRET : ${GOOGLE_CLIENT_SECRET}
+  SENDER_EMAIL : ${SENDER_EMAIL}
+  SENDER_PASSWORD : ${SENDER_PASSWORD}
 # 1. 에이전트 기본 정보
 # name: smithery.ai 대시보드에 표시될 에이전트의 이름입니다.
 # description: 에이전트에 대한 간략한 설명입니다.
