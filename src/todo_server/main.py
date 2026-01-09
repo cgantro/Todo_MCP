@@ -4,13 +4,10 @@ from typing import Optional
 from fastmcp import FastMCP
 from smithery.decorators import smithery
 from pydantic import BaseModel, Field
-from dotenv import load_dotenv
+# load_dotenv는 여기서 지웁니다.
 
-# 도구 등록 함수 임포트
 from .tools.calendar_tools import register_calendar_tools
 from .tools.helper import register_helper_tools
-
-load_dotenv()
 
 class SmartManagerConfig(BaseModel):
     GOOGLE_CLIENT_ID: Optional[str] = Field(None, description="Google OAuth Client ID")
@@ -21,47 +18,40 @@ class SmartManagerConfig(BaseModel):
 
 @smithery.server(config_schema=SmartManagerConfig)
 def app(config: SmartManagerConfig = None):
-    # 1. 객체 생성 및 도구 무조건 등록 (스캔 시 목록 노출용)
     mcp = FastMCP("Smart Schedule Manager")
     register_calendar_tools(mcp)
     register_helper_tools(mcp)
 
-    # 2. 스캔 단계일 경우 환경변수 없이 반환
+    # 1. Smithery 스캔(Discovery) 단계
     if config is None or config.GOOGLE_CLIENT_ID is None:
+        # 스캔 시에는 실제 도구 로직이 실행되지 않으므로 환경 변수 주입 없이 mcp 객체만 반환
         os.environ["SMITHERY_SCANNING"] = "true"
         return mcp
 
-    # 3. 실제 실행 단계: 환경변수 주입
+    # 2. 실제 실행 단계: Smithery 대시보드에서 주입된 config 값을 시스템 환경 변수로 매핑
     os.environ["SMITHERY_SCANNING"] = "false"
-    os.environ["GOOGLE_CLIENT_ID"] = config.GOOGLE_CLIENT_ID
-    os.environ["GOOGLE_CLIENT_SECRET"] = config.GOOGLE_CLIENT_SECRET
-    os.environ["SENDER_EMAIL"] = config.SENDER_EMAIL
-    os.environ["SENDER_PASSWORD"] = config.SENDER_PASSWORD
-    os.environ["SMITHERY_KEY"] = config.SMITHERY_KEY
+    os.environ["GOOGLE_CLIENT_ID"] = str(config.GOOGLE_CLIENT_ID or "")
+    os.environ["GOOGLE_CLIENT_SECRET"] = str(config.GOOGLE_CLIENT_SECRET or "")
+    os.environ["SENDER_EMAIL"] = str(config.SENDER_EMAIL or "")
+    os.environ["SENDER_PASSWORD"] = str(config.SENDER_PASSWORD or "")
+    os.environ["SMITHERY_KEY"] = str(config.SMITHERY_KEY or "")
 
-    print("🚀 서버가 환경변수와 함께 로드되었습니다.", file=sys.stderr)
+    # 모든 로그는 stderr로 출력하여 Smithery 연결 오염 방지
+    print("🚀 Smithery 주입 설정으로 서버가 로드되었습니다.", file=sys.stderr)
     return mcp
 
-
+# 로컬 실행 시에만 환경 변수 로드 및 서버 가동
 if __name__ == "__main__":
-    # 로컬에서 실행할 때는 Smithery가 주입해주는 config가 없으므로 
-    # .env 파일 등에서 읽어온 값으로 가짜 config 객체를 만들어 넘깁니다.
-    from pydantic import ValidationError
+    from dotenv import load_dotenv
+    load_dotenv() # 로컬에서만 .env 파일을 읽습니다.
     
-    try:
-        # 로컬 환경변수를 기반으로 config 객체 생성
-        local_config = SmartManagerConfig(
-            GOOGLE_CLIENT_ID=os.getenv("GOOGLE_CLIENT_ID"),
-            GOOGLE_CLIENT_SECRET=os.getenv("GOOGLE_CLIENT_SECRET"),
-            SENDER_EMAIL=os.getenv("SENDER_EMAIL"),
-            SENDER_PASSWORD=os.getenv("SENDER_PASSWORD"),
-            SMITHERY_KEY=os.getenv("SMITHERY_KEY")
-        )
-        
-        # 서버 인스턴스 생성 및 실행
-        server_instance = app(local_config)
-        server_instance.run() # FastMCP 서버 실행
-        
-    except ValidationError as e:
-        print(f"❌ 로컬 설정 오류: {e}", file=sys.stderr)
-        print("💡 .env 파일에 필요한 환경변수가 모두 있는지 확인하세요.", file=sys.stderr)
+    local_config = SmartManagerConfig(
+        GOOGLE_CLIENT_ID=os.getenv("GOOGLE_CLIENT_ID"),
+        GOOGLE_CLIENT_SECRET=os.getenv("GOOGLE_CLIENT_SECRET"),
+        SENDER_EMAIL=os.getenv("SENDER_EMAIL"),
+        SENDER_PASSWORD=os.getenv("SENDER_PASSWORD"),
+        SMITHERY_KEY=os.getenv("SMITHERY_KEY")
+    )
+    
+    server_instance = app(local_config)
+    server_instance.run()
